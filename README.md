@@ -7,15 +7,15 @@ A Vim plugin which colorizes #ifdef zones in the sign column. No more, no less.
 For now, this plugin just use matching patterns to define two zones to be colored on the actual buffer. 
 Patterns match this way:
 
-#ifdef SECTION 
+\\#ifdef SECTION 
 |
 | Zone 1
 |
-#else
+\\#else
 |
 | Zone 2
 |
-#endif 
+\\#endif 
 
 ### Installation
 
