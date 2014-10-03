@@ -8,13 +8,13 @@ For now, this plugin just use matching patterns to define two zones to be colore
 Patterns match this way:
 
 \\#ifdef SECTION 
-|
-| Zone 1
-|
+\\|
+\\| Zone 1
+\\|
 \\#else
-|
-| Zone 2
-|
+\\|
+\\| Zone 2
+\\|
 \\#endif 
 
 ### Installation
