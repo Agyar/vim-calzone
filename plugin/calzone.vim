@@ -90,36 +90,43 @@ class CalzonesParser:
 
             calzone = self._ifd.match(line)
             if calzone: 
-                lineno_e = self.SearchForBranch(lineno + 1, self.code)
+                SFC, lineno_e = self.SearchForBranch(lineno + 1, self.code)
                 zone_if = ( lineno, lineno_e )
-
-                lineno_d = self.SearchForClosure(lineno_e + 1, self.code)
-                zone_else = ( lineno_e + 1, lineno_d )
-
                 self.calzones[zone_if] = 'IF'
-                self.calzones[zone_else] = 'ELSE'
-                lineno = lineno_d
+
+                if SFC:
+                    lineno_d = self.SearchForClosure(lineno_e + 1, self.code)
+                    zone_else = ( lineno_e + 1, lineno_d )
+                    self.calzones[zone_else] = 'ELSE'
+                    lineno = lineno_d
+                else:
+                    lineno = lineno_e
 
             lineno = lineno + 1
         return self.calzones
 
     def SearchForBranch(self, lineno, code):
         inner_loop = 0
+        els = 0
         while True:
             line = linecache.getline(code, lineno)
             if line == '':
-                return lineno
+                return els, lineno
     
-            calzonelse = self._els.match(line)
-
             calzonif = self._if.match(line)
-            if calzonelse:
+            calzonelse = self._els.match(line)
+            calzonend = self._end.match(line)
+
+            if (calzonelse or calzonend):
+                if calzonelse:
+                    els = 1
                 if inner_loop == 0:
-                    return lineno
+                    return els, lineno
                 else:
                     inner_loop = inner_loop - 1
             elif calzonif:
                 inner_loop = inner_loop + 1
+                
             lineno = lineno + 1
 
     def SearchForClosure(self, lineno, code):
