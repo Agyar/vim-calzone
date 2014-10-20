@@ -22,7 +22,8 @@ endfunction
 
 function! s:ToggleCalzone()
   if exists("g:calzone_is_on_the_table") && g:calzone_is_on_the_table 
-    call s:ClearSigns()
+    "call s:ClearSigns()
+    call s:ClearCalzones()
     let g:calzone_is_on_the_table = 0
   else
     call s:DeliverCalzone()
@@ -36,6 +37,36 @@ import sys
 import os
 import re
 import linecache
+
+def clear_calzones():
+    curr_calzones={}
+    curr_buffer = vim.current.buffer.name
+    curr_calzones_list = get_current_calzones(curr_buffer)
+
+    for line in curr_calzones_list:
+        
+        if '=' not in line:
+            continue
+
+        tokens = line.split()
+        variables = dict(token.split('=') for token in tokens)
+        # print variables
+        # so vim has french version ... fuck it
+        line = variables['ligne']
+        curr_calzones[line] = variables['nom']
+    
+    for line, name in curr_calzones.iteritems():
+        if name >= 'calzones':
+            vim.command(':sign unplace %i' % int(line))
+
+def get_current_calzones(current_file):
+    vim.command('redir => s:calzones_sign_list')
+    vim.command('silent sign place file=%s' % current_file)
+    vim.command('redir END')
+
+    sign_list = vim.eval('s:calzones_sign_list')
+    lines = [line.strip() for line in sign_list.split('\n')]
+    return lines
 
 def make_calzones(filename=None, code=None):
     if code:
@@ -165,6 +196,12 @@ if __name__ == '__main__':
     if 'vim' not in globals():
         main()
 endpython
+
+function! s:ClearCalzones()
+    python << CCEND
+clear_calzones()
+CCEND
+endfunction
 
 function! s:DeliverCalzone()
     python << END
