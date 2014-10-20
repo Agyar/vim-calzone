@@ -42,12 +42,9 @@ def make_calzones(filename=None, code=None):
         filename = code
     
     curr_buffer = vim.current.buffer.name
-    # parse code and determines zone of #ifdef #else #endif
-    # TODO debug this story of filename, this is shitty as hell
-    # TODO debug seems empty
-
-    #filename = '/home/ben/Work/Sources/code_saturne/src/fvm/fvm_box.c'
     filename = curr_buffer
+
+    # parse code and determines zone of #ifdef #else #endif
     calzones = CalzonesParser(filename).Parse()
     # separate #ifdef and #else zones
     # this is objectively NOT really useful since they are meant to interlace
@@ -118,7 +115,7 @@ class CalzonesParser:
             calzonend = self._end.match(line)
 
             if (calzonelse or calzonend):
-                if calzonelse:
+                if calzonelse and not inner_loop:
                     els = 1
                 if inner_loop == 0:
                     return els, lineno
@@ -174,8 +171,6 @@ function! s:DeliverCalzone()
 make_calzones()
 END
   let g:calzone_is_on_the_table = 1
-  hi calzones_else ctermfg=6 ctermbg=6
-  hi calzones_if ctermfg=2 ctermbg=2
 endfunction
 
 hi SignColumn guifg=fg guibg=bg
