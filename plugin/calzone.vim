@@ -12,6 +12,7 @@ if !has('python')
   finish
 endif 
 
+
 if exists("g:loaded_calzone") 
   finish 
 endif 
@@ -19,6 +20,14 @@ endif
 function! s:ClearSigns()
   sign unplace *
 endfunction 
+
+function! s:UpdateCalzone()
+  if exists("g:calzone_is_on_the_table") && g:calzone_is_on_the_table
+  python << UCEND
+update_calzones_fast()
+UCEND
+  endif
+endfunction
 
 function! s:ToggleCalzone()
   if exists("g:calzone_is_on_the_table") && g:calzone_is_on_the_table 
@@ -58,6 +67,13 @@ def clear_calzones():
     for line, name in curr_calzones.iteritems():
         if name >= 'calzones':
             vim.command(':sign unplace %i' % int(line))
+
+    linecache.clearcache()
+
+def update_calzones_fast():
+    #change_list = vim.eval('call changes()')
+    change_list = vim.command(':changes')
+    print change_list
 
 def get_current_calzones(current_file):
     vim.command('redir => s:calzones_sign_list')
@@ -112,6 +128,7 @@ class CalzonesParser:
         while True:
             line = linecache.getline(self.code, lineno)
             if line == '':
+                # should probably remove this test
                 if lineno == 1:
                   vim.command(":q")
                 break
@@ -217,3 +234,5 @@ sign define calzones_if text=XX texthl=calzones_if
 sign define calzones_else text=XX texthl=calzones_else
 
 command! Calzone call s:ToggleCalzone()
+" for testing only
+" autocmd BufWritePost * call s:UpdateCalzone()
