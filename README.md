@@ -21,14 +21,7 @@ Patterns match this way:
 
 Before installation, please check your Vim supports signs by running `:echo has('signs')`.  `1` means you're all set; `0` means you need to install a Vim with signs support.  If you're compiling Vim yourself you need the 'big' or 'huge' feature set.  [MacVim][] supports signs.
 
-If you don't have a preferred installation method, I recommend installing [Pathogen], and then simply copy and paste:
-
-```
-cd ~/.vim/bundle
-git clone git://github.com/Agyar/vim-calzone.git
-```
-
-Or for [Vundle](https://github.com/gmarik/vundle) users:
+If you don't have a preferred installation method, I recommend installing [Vundle](https://github.com/gmarik/vundle) and:
 
 Add `Plugin 'Agyar/vim-calzone'` to your `~/.vimrc` and then:
 
@@ -70,5 +63,4 @@ hi SignColumn ctermbg=0 ctermfg=0
 * No bindings offered yet
 * No regex personalisation offered yet
 * Handles only on couple of regex 
-* Toggling is not perfect
 * Performances ??
